@@ -1,0 +1,16 @@
+---
+title: "Eleanor Amidei"
+image: "images/Eleanor_headshot.JPG"
+about:
+  template: jolla
+  links: 
+    - icon: envelope
+      href: mailto:eamidei@ucsd.edu
+    - icon: linkedin
+      href: https://www.linkedin.com/in/eleanoramidei/
+    
+---
+
+This is a Quarto website.
+
+To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
