@@ -1,5 +1,26 @@
 [
   {
+    "objectID": "blog.html",
+    "href": "blog.html",
+    "title": "My Projects",
+    "section": "",
+    "text": "This is project 1\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThis is project 2\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "blog/project1/index.html",
+    "href": "blog/project1/index.html",
+    "title": "This is project 1",
+    "section": "",
+    "text": "I cleaned some data\n\nimport seaborn as sns\nimport matplotlib.pyplot as plt\n\n# Load dataset\ndf = sns.load_dataset(\"mpg\")\n\n# Drop NA rows just in case\ndf = df.dropna(subset=[\"weight\", \"mpg\"])\n\n# Plot\nsns.scatterplot(data=df, x=\"weight\", y=\"mpg\")\nplt.show()"
+  },
+  {
+    "objectID": "blog/project1/index.html#section-1-data",
+    "href": "blog/project1/index.html#section-1-data",
+    "title": "This is project 1",
+    "section": "",
+    "text": "I cleaned some data\n\nimport seaborn as sns\nimport matplotlib.pyplot as plt\n\n# Load dataset\ndf = sns.load_dataset(\"mpg\")\n\n# Drop NA rows just in case\ndf = df.dropna(subset=[\"weight\", \"mpg\"])\n\n# Plot\nsns.scatterplot(data=df, x=\"weight\", y=\"mpg\")\nplt.show()"
+  },
+  {
     "objectID": "resume.html",
     "href": "resume.html",
     "title": "About",
@@ -11,20 +32,27 @@
     "href": "index.html",
     "title": "Eleanor Amidei",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "I’m an experienced customer operations professional currently pursuing a Master’s in Business Analytics at UC San Diego. After several years working closely with customers and internal teams in high-growth startups, I saw firsthand how valuable data can be in improving processes, identifying opportunities, and supporting smarter decision-making. I returned to school to build a stronger foundation in analytics, focusing on the tools and techniques that turn customer and business data into meaningful and actionable insights. With a blend of practical experience and analytical training, I’m looking to contribute to data-driven teams in customer strategy, revenue operations, or sales analytics."
   },
   {
-    "objectID": "blog.html",
-    "href": "blog.html",
-    "title": "My Projects",
+    "objectID": "index.html#about-me",
+    "href": "index.html#about-me",
+    "title": "Eleanor Amidei",
     "section": "",
-    "text": "This is project 1\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "I’m an experienced customer operations professional currently pursuing a Master’s in Business Analytics at UC San Diego. After several years working closely with customers and internal teams in high-growth startups, I saw firsthand how valuable data can be in improving processes, identifying opportunities, and supporting smarter decision-making. I returned to school to build a stronger foundation in analytics, focusing on the tools and techniques that turn customer and business data into meaningful and actionable insights. With a blend of practical experience and analytical training, I’m looking to contribute to data-driven teams in customer strategy, revenue operations, or sales analytics."
   },
   {
-    "objectID": "blog/project1/index.html",
-    "href": "blog/project1/index.html",
-    "title": "This is project 1",
+    "objectID": "index.html#education",
+    "href": "index.html#education",
+    "title": "Eleanor Amidei",
+    "section": "Education",
+    "text": "Education\nUniversity of California, San Diego | San Diego, CA\nM.S. in Business Analytics | June 2025\nUniversity of California, Berkeley | Berkeley, CA\nB.A. in Media Studies, Minor in Public Policy | May 2018"
+  },
+  {
+    "objectID": "blog/project2/index.html",
+    "href": "blog/project2/index.html",
+    "title": "This is project 2",
     "section": "",
-    "text": "This is project 1"
+    "text": "This is project 2"
   }
 ]

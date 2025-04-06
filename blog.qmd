@@ -1,5 +1,6 @@
 ---
 title: "My Projects"
+format: html
 listing:
   contents: blog
   type: grid

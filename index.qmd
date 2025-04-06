@@ -2,7 +2,7 @@
 title: "Eleanor Amidei"
 image: "images/Eleanor_headshot.JPG"
 about:
-  template: jolla
+  template: trestles
   links: 
     - icon: envelope
       href: mailto:eamidei@ucsd.edu
@@ -11,5 +11,18 @@ about:
     
 ---
 
-This is my webpage.
+## About Me 
 
+I'm an experienced customer operations professional currently pursuing a Master’s in Business Analytics at UC San Diego. After several years working closely with customers and internal teams in high-growth startups, I saw firsthand how valuable data can be in improving processes, identifying opportunities, and supporting smarter decision-making. I returned to school to build a stronger foundation in analytics, focusing on the tools and techniques that turn customer and business data into meaningful and actionable insights. With a blend of practical experience and analytical training, I’m looking to contribute to data-driven teams in customer strategy, revenue operations, or sales analytics.
+
+## Education
+
+**University of California, San Diego** | *San Diego, CA*
+
+M.S. in Business Analytics | June 2025
+
+**University of California, Berkeley** | *Berkeley, CA*
+
+B.A. in Media Studies, Minor in Public Policy | May 2018
+
+--- 

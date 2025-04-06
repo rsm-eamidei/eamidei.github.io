@@ -1,1 +1,23 @@
 # This is project 1
+
+## Section 1: Data
+I cleaned some data
+
+``` {python}
+#| message: false
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load dataset
+df = sns.load_dataset("mpg")
+
+# Drop NA rows just in case
+df = df.dropna(subset=["weight", "mpg"])
+
+# Plot
+sns.scatterplot(data=df, x="weight", y="mpg")
+plt.show()
+```
+
+
