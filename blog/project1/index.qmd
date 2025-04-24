@@ -1,23 +1,524 @@
-# This is project 1
+---
+title: "A Replication of Karlan and List (2007)"
+author: "Eleanor Amidei"
+date: today
+callout-appearance: minimal # this hides the blue "i" icon on .callout-notes
+---
+# A Replication of Karlan and List (2007)
+In their 2007 study published in the American Economic Review, economists Dean Karlan (Yale University) and John List (University of Chicago) conducted a large-scale field experiment to evaluate the impact of different types of fundraising appeals on charitable giving. The experiment was designed to test whether certain behavioral economic principles—specifically, those involving matching and challenge grants—could significantly influence donor behavior.
 
-## Section 1: Data
-I cleaned some data
+The researchers partnered with a nonprofit organization to send out 50,000 fundraising letters to potential donors. These individuals were randomly assigned to receive one of three types of solicitation letters:
+
+Standard Letter: This control condition contained a straightforward appeal for donations, with no mention of matching or challenge grants.
+
+Matching Grant Letter: This version of the letter informed potential donors that their contributions would be matched dollar-for-dollar by a large donor, effectively doubling the impact of each gift. The idea was to invoke a sense of increased efficacy and urgency.
+
+Challenge Grant Letter: In this version, the letter stated that a large donor had already pledged a significant amount of funding, contingent on the organization’s ability to raise additional funds from other donors. This framed the recipient’s contribution as necessary to “meet the challenge” and unlock previously pledged money.
+
+Each treatment group was randomized to ensure that differences in response could be causally attributed to the content of the letter. The researchers then tracked various outcomes, such as the likelihood of donating, the amount donated, and donor heterogeneity in response to the different appeals.
+
+The key finding was that matching grants significantly increased both the likelihood of donating and the average donation amount, while challenge grants did not perform significantly better than the standard appeal. The results provided empirical support for the effectiveness of matching mechanisms in charitable fundraising and have since influenced both economic theory and practical strategies used by nonprofit organizations.
+
+## Data Exploration
 
 ``` {python}
-#| message: false
+import pandas as pd
+import numpy as np
 
-import seaborn as sns
-import matplotlib.pyplot as plt
+karlan_data = pd.read_stata('karlan_list_2007.dta')
+print(karlan_data.shape)
+print(karlan_data.columns)
+print(karlan_data.isnull().sum())
+print(karlan_data.describe(include='all'))
 
-# Load dataset
-df = sns.load_dataset("mpg")
+print(karlan_data['treatment'].value_counts(normalize=True)) #treatment proportion
+print(karlan_data['gave'].value_counts(normalize=True))  #donation rate 
+print(karlan_data['amount'].mean()) 
+print(karlan_data.dtypes)  
 
-# Drop NA rows just in case
-df = df.dropna(subset=["weight", "mpg"])
 
-# Plot
-sns.scatterplot(data=df, x="weight", y="mpg")
-plt.show()
+
 ```
 
 
+## Balance Test 
+As an ad hoc test of the randomization mechanism, I provide a series of tests that compare aspects of the treatment and control groups to assess whether they are statistically significantly different from one another.
+
+When doing the linear regression, regress for example mrm2 on treatment and look at the estimated coefficient on the treatment variable. It might be helpful to compare parts of your analysis to Table 1 in the paper. Be sure to comment on your results (hint: why is Table 1 included in the paper)._
+
+I will be testing the following variables to ensure that the treatment and control groups are statistically similar:
+- `mrm2`: The number of months since the last donation.
+- `bluecty` : If the potential donor lives in a blue county.
+- `freq`: The number of prior donations.
+- `female`: The gender to the donor.
+
+#### `mrm2`
+``` {python}
+
+from scipy import stats
+
+# mrm2
+# groups
+treatment_group = karlan_data[karlan_data['treatment'] == 1]['mrm2'].dropna()
+control_group = karlan_data[karlan_data['control'] == 1]['mrm2'].dropna()
+
+
+# Manual calculation of t-statistic
+
+n1, n2 = len(treatment_group), len(control_group)
+mean1, mean2 = np.mean(treatment_group), np.mean(control_group)
+var1, var2 = np.var(treatment_group, ddof=1), np.var(control_group, ddof=1)
+
+# Standard error
+se = np.sqrt(var1/n1 + var2/n2)
+
+# t-stat
+t_manual = (mean1 - mean2) / se
+print("Manual t-statistic:", t_manual)
+
+# Degrees of freedom (Welch's approximation)
+df = (var1/n1 + var2/n2)**2 / ((var1**2)/((n1**2)*(n1 - 1)) + (var2**2)/((n2**2)*(n2 - 1)))
+
+# Two-tailed p-value
+from scipy.stats import t
+
+p_value = 2 * (1 - t.cdf(abs(t_manual), df))
+
+
+print("Manual p-value:", p_value)
+
+
+```
+With a t-statistic of .12, which is not more extreme than 1.96, we fail to reject the null hypothesis that the treatment and control groups are statistically significantly different from one another at the 95% confidence level. 
+
+Additionally, when we run this t-statistic through a pre-built program, we find the p_value is actually .905, which much higher than the .05 threshold we would need to reject the null hypothesis.
+
+``` {python}
+import pyrsm as rsm 
+
+reg = rsm.model.regress({"karlan": karlan_data}, rvar="mrm2", evar=["control"])
+reg.summary(rmse=True, ssq=True)
+```
+
+The positive t-statistic is minimal but indicates the treatment group has a slightly higher number of months since last donation. The p-value is well above 0.05, indicating that this difference is not statistically significant at the 95% confidence level. These are the same results we saw with our manual t-test calculation. 
+
+#### `bluectyc`
+
+``` {python}
+#bluecty - donor county is blue
+#groups
+treatment_group = karlan_data[karlan_data['treatment'] == 1]['bluecty'].dropna()
+control_group = karlan_data[karlan_data['control'] == 1]['bluecty'].dropna()
+
+#t-test
+n1, n2 = len(treatment_group), len(control_group)
+mean1, mean2 = np.mean(treatment_group), np.mean(control_group)
+var1, var2 = np.var(treatment_group, ddof=1), np.var(control_group, ddof=1)
+
+# Standard error
+se = np.sqrt(var1/n1 + var2/n2)
+
+# t-stat
+t_manual = (mean1 - mean2) / se
+print("Manual t-statistic:", t_manual)
+```
+
+The t-statistic is -0.85, which is not more extreme than -1.96, we fail to reject the null hypothesis that the treatment and control groups are statistically significantly different from one another at the 95% confidence level for the blue county variable.
+
+``` {python}
+import pyrsm as rsm 
+
+reg = rsm.model.regress({"karlan": karlan_data}, rvar="bluecty", evar=["control"])
+reg.summary(rmse=True, ssq=True)
+```
+
+We see the same t-statistic here, and the p-value is .396, which is well above the .05 threshold we would need to reject the null hypothesis.
+
+#### `freq`
+
+``` {python}
+#freq - the number of prior donations
+#groups
+treatment_group = karlan_data[karlan_data['treatment'] == 1]['freq'].dropna()
+control_group = karlan_data[karlan_data['control'] == 1]['freq'].dropna()
+
+# manual t_test
+n1, n2 = len(treatment_group), len(control_group)
+mean1, mean2 = np.mean(treatment_group), np.mean(control_group)
+var1, var2 = np.var(treatment_group, ddof=1), np.var(control_group, ddof=1)
+
+# Standard error
+se = np.sqrt(var1/n1 + var2/n2)
+
+# t-stat
+t_manual = (mean1 - mean2) / se
+print("Manual t-statistic:", t_manual)
+
+
+
+#linear regression
+reg = rsm.model.regress({"karlan": karlan_data}, rvar="freq", evar=["control"])
+reg.summary(rmse=True, ssq=True)
+
+```
+
+There is no significant difference between the treatment and control groups in terms of the number of prior donations. The t-statistic is very close to zero, and the p-value is well above 0.05, indicating no statistically significant difference at the 95% confidence level. This is consistent across both the t-test and linear regression.
+
+#### `female`
+``` {python}
+
+#groups
+treatment_group = karlan_data[karlan_data['treatment'] == 1]['female'].dropna()
+control_group = karlan_data[karlan_data['control'] == 1]['female'].dropna()
+
+# manual t_test
+n1, n2 = len(treatment_group), len(control_group)
+mean1, mean2 = np.mean(treatment_group), np.mean(control_group)
+var1, var2 = np.var(treatment_group, ddof=1), np.var(control_group, ddof=1)
+
+# Standard error
+se = np.sqrt(var1/n1 + var2/n2)
+
+# t-stat
+t_manual = (mean1 - mean2) / se
+print("Manual t-statistic:", t_manual)
+
+
+
+#linear regression
+reg = rsm.model.regress({"karlan": karlan_data}, rvar="female", evar=["control"])
+reg.summary(rmse=True, ssq=True)
+```
+
+Here the t-statistic generated from the manual test is close to -1.96, but still less extreme at -1.75. This means we fail to reject the null hypothesis that the treatment and control groups are statistically significantly different from one another at the 95% confidence level.
+
+When we run this through a pre-built program, we find the p-value is .08, which is above the .05 threshold but below the .10 threshold.
+
+The difference between the percentage of female potential donors is marginally different between the two groups, this difference is not significant at the 95% confidence level. This is true in both the t-test and the linear regression. This variable however does have a significant difference at the 90% confidence level, so it would be worth noting. 
+
+## Charitable Contribution Made
+
+First, I analyze whether matched donations lead to an increased response rate of making a donation. 
+
+``` {python}
+import matplotlib.pyplot as plt
+
+donated_treatment = karlan_data[karlan_data['treatment'] == 1]["gave"].mean()
+print(f"{round(donated_treatment*100,2)}% of treatment group donated")
+donated_control = karlan_data[karlan_data['control'] == 1]["gave"].mean()
+print(f"{round(donated_control*100,2)}% of control group donated")
+
+plt.figure(figsize=(8, 6))
+plt.bar(['Treatment', 'Control'], [donated_treatment, donated_control], color=['green', 'pink'])
+plt.title('Donation Rates by Group')
+plt.ylabel('Donation Rate')
+
+```
+
+``` {python}
+#groups
+treatment_group = karlan_data[karlan_data['treatment'] == 1]['gave']
+control_group = karlan_data[karlan_data['control'] == 1]['gave']
+
+# t_test
+n1, n2 = len(treatment_group), len(control_group)
+mean1, mean2 = np.mean(treatment_group), np.mean(control_group)
+var1, var2 = np.var(treatment_group, ddof=1), np.var(control_group, ddof=1)
+
+# Standard error
+se = np.sqrt(var1/n1 + var2/n2)
+
+# t-stat
+t_manual = (mean1 - mean2) / se
+print("Manual t-statistic:", t_manual)
+
+
+
+#linear regression
+reg = rsm.model.regress({"karlan": karlan_data}, rvar="gave", evar=["control"])
+reg.summary(rmse=True, ssq=True)
+
+#probit regression
+import statsmodels.api as sm
+
+X = karlan_data['treatment']
+Y = karlan_data['gave']
+
+X = sm.add_constant(X)
+
+# probit model
+probit_model = sm.Probit(Y, X)
+result = probit_model.fit()
+
+print(result.summary())
+
+#marginal effects to see if results match from the study
+mfx = result.get_margeff()
+print(mfx.summary())
+
+```
+
+There difference between the treatment and control group's response rate is significant at the 95% confidence level (the t-value is more extreme than 1.96 for a two-tailed test). The treatment group has a higher response rate than the control group, which suggests that the matching grant appeal is effective in increasing the likelihood of making a donation. This finding aligns with the hypothesis that matching grants can enhance donor motivation and engagement.
+
+## Differences between Match Rates
+
+Next, I assess the effectiveness of different sizes of matched donations on the response rate.
+
+1:1 vs 2:1 match ratio on response rate
+
+``` {python}
+
+# t-test comparing 1:1 match rate and 2:1 match rate
+
+#groups
+match_1_1 = karlan_data[karlan_data['ratio'] == 1]['gave']
+match_2_1 = karlan_data[karlan_data['ratio2'] == 1]['gave']
+
+# t_test
+n1, n2 = len(match_1_1), len(match_2_1)
+mean1, mean2 = np.mean(match_1_1), np.mean(match_2_1)
+var1, var2 = np.var(match_1_1, ddof=1), np.var(match_2_1, ddof=1)
+
+# Standard error
+se = np.sqrt(var1/n1 + var2/n2)
+
+# t-stat
+t_manual = (mean1 - mean2) / se
+
+print("Manual t-statistic:", t_manual)
+# Two-tailed p-value
+
+p_value = 2 * (1 - t.cdf(abs(t_manual), df))
+print("Manual p-value:", p_value)
+```
+
+2:1 vs 3:1 match ratio on response rate
+
+``` {python}
+# t-test comparing 2:1 match rate and 3:1 match rate
+#groups
+match_2_1 = karlan_data[karlan_data['ratio2'] == 1]['gave']
+match_3_1 = karlan_data[karlan_data['ratio3'] == 1]['gave']
+
+# t_test
+n1, n2 = len(match_2_1), len(match_3_1)
+mean1, mean2 = np.mean(match_2_1), np.mean(match_3_1)
+var1, var2 = np.var(match_2_1, ddof=1), np.var(match_3_1, ddof=1)
+
+# Standard error
+se = np.sqrt(var1/n1 + var2/n2)
+
+# t-stat
+t_manual = (mean1 - mean2) / se
+print("Manual t-statistic:", t_manual)
+
+# Two-tailed p-value
+
+p_value = 2 * (1 - t.cdf(abs(t_manual), df))
+print("Manual p-value:", p_value)
+```
+
+The negative t-statistic indicates that the 2:1 match ratio has a higher mean that the 1:1 ratio, however this difference is not significant at the 95% confidence level. The p-value is .34, which is well above the .05 threshold we would need to reject the null hypothesis.
+
+The same applies to the 3:1 match ratio, with a p-value of .96 and a smaller difference between the two groups. 
+
+_todo: Assess the same issue using a regression. Specifically, create the variable `ratio1` then regress `gave` on `ratio1`, `ratio2`, and `ratio3` (or alternatively, regress `gave` on the categorical variable `ratio`). Interpret the coefficients and their statistical precision._
+
+``` {python}
+karlan_data["ratio1"] = (karlan_data["ratio"] == 1).astype(int)
+
+X = karlan_data[['ratio1','ratio2','ratio3']]
+Y = karlan_data['gave']
+
+X = sm.add_constant(X)
+
+# probit model
+probit_model = sm.Probit(Y, X)
+result = probit_model.fit()
+
+print(result.summary())
+
+#marginal effects to see if results match from the study
+mfx = result.get_margeff()
+print(mfx.summary())
+
+
+```
+
+1:1 ratio shows a coefficient 0.062, meaning the 1:1 ratio is less likely to lead to a donation than the other ratio's but a match should still increase the probability for a give. The 2:1 ratio has an odds ratio of 0.0980, meaning it is slightly more likely to lead to a donation than the control group. The 3:1 ratio has an odds ratio of 0.0998, meaning it is slightly more likely to lead to a donation than the 2:1 ratio. The p_values indicate that the results for ratio 2 and ratio 3 are statistically significant at the 95% confidence level, while the results for ratio 1 are not.
+
+Calculating the response rate differences between match ratios: 
+
+- calculated directly from the data
+
+``` {python}
+#means
+mean_1_1 = karlan_data[karlan_data["ratio"] == 1]["gave"].mean()
+mean_2_1 = karlan_data[karlan_data["ratio"] == 2]["gave"].mean()
+mean_3_1 = karlan_data[karlan_data["ratio"] == 3]["gave"].mean()
+
+#differences
+diff_2_1_vs_1_1 = mean_2_1 - mean_1_1
+diff_3_1_vs_2_1 = mean_3_1 - mean_2_1
+
+print("2:1 vs 1:1:", diff_2_1_vs_1_1)
+print("3:1 vs 2:1:", diff_3_1_vs_2_1)
+
+```
+
+ - calculated from the differences in coefficients
+
+ ``` {python}
+coef_1_1 = result.params['ratio1']
+coef_2_1 = result.params['ratio2']
+coef_3_1 = result.params['ratio3']
+
+# Difference in effects
+diff_2_1_vs_1_1 = coef_2_1 - coef_1_1
+diff_3_1_vs_2_1 = coef_3_1 - coef_2_1
+print("Regression-based effect of 3:1 vs 2:1 match:", diff_3_1_vs_2_1)
+print("Regression-based effect of 2:1 vs 1:1 match:", diff_2_1_vs_1_1)
+
+mfx = result.get_margeff()
+print(mfx.summary())
+
+ ```
+
+Both raw and model-based results suggest that increasing the match ratio from 1:1 to 2:1 significantly improves donation rates. However, increasing it further to 3:1 provides almost no additional benefit. These findings support the paper’s interpretation that higher match ratios can increase giving, but they also highlight diminishing returns at higher match levels.
+
+The p-values for ratio1 are significant at the 90% level but the results for ratio2 and ratio3 are significant at the 95% level..
+
+Based on the probit model, the 3:1 match leads to a slightly higher (0.0018) latent index score for donation compared to the 2:1 match, holding everything else constant.
+
+
+## Size of Charitable Contribution
+
+In this subsection, I analyze the effect of the size of matched donation on the size of the charitable contribution (amount of donation).
+
+``` {python}
+reg = rsm.model.regress({"karlan": karlan_data}, rvar="amount", evar=["treatment"])
+reg.summary()
+```
+
+In the regression above, we learn that treatment effect has a slightly significant (not at the 95% confidence level and small) effect on size of donation.
+
+``` {python}
+karlan_donations = karlan_data[karlan_data['gave'] ==1 ]
+reg = rsm.model.regress({"karlan": karlan_donations}, rvar="amount", evar=["treatment"])
+reg.summary()
+```
+
+When only including donors, the coefficient of the regression shows us the treatment group donates about $1.67 less than the control group, however this result is not significant at the 95% confidence level. This does not have a causal interpretation because treatment may affect the likelihood of donating, and here we're looking at the size of the donation conditional on donating.
+
+``` {python}
+donors = karlan_data[karlan_data['gave'] ==1]
+
+# Control
+control_donors = donors[donors['treatment'] == 0]['amount']
+plt.hist(control_donors, bins=30, alpha=0.7, label='Control')
+plt.axvline(control_donors.mean(), color='red', linestyle='dashed', linewidth=2)
+plt.title("Control Group: Donation Amounts")
+plt.xlabel("Donation Amount")
+plt.ylabel("Frequency")
+plt.legend()
+plt.show()
+
+# Treatment
+treated_donors = donors[donors['treatment'] == 1]['amount']
+plt.hist(treated_donors, bins=30, alpha=0.7, label='Treatment')
+plt.axvline(treated_donors.mean(), color='red', linestyle='dashed', linewidth=2)
+plt.title("Treatment Group: Donation Amounts")
+plt.xlabel("Donation Amount")
+plt.ylabel("Frequency")
+plt.legend()
+plt.show()
+```
+
+## Simulation Experiment
+
+As a reminder of how the t-statistic "works," in this section I use simulation to demonstrate the Law of Large Numbers and the Central Limit Theorem.
+
+Suppose the true distribution of respondents who do not get a charitable donation match is Bernoulli with probability p=0.018 that a donation is made. 
+Further suppose that the true distribution of respondents who do get a charitable donation match of any size  is Bernoulli with probability p=0.022 that a donation is made.
+
+### Law of Large Numbers
+Here, I simulate 10,000 draws from the control and treatment groups, then calculate their differences.
+
+
+``` {python}
+#Simulated Numbers
+np.random.seed(1)  # For reproducibilit
+sim_control = np.random.choice(control_donors, size=10000, replace=True)
+sim_treated = np.random.choice(treated_donors, size=10000, replace=True)
+diff=sim_treated-sim_control
+
+#Cumulative Average
+cumulative_avg = np.cumsum(diff) / np.arange(1, len(diff) + 1)
+
+#True Difference in means
+True_Diff = treated_donors.mean() - control_donors.mean()
+
+plt.plot(cumulative_avg, label='Cumulative Average')
+plt.axhline(True_Diff, color='red', linestyle='dashed', linewidth=2, label='True Difference')
+plt.title('Cumulative Average of Differences')
+plt.xlabel('Number of Samples')
+plt.ylabel('Cumulative Average')
+plt.legend()
+
+```
+
+By plotting the cumulative average, we can see it approaches the true difference in means. As we increase the number of samples, the variation stabilizes. The cumulative average converges to the true difference in means. This demonstrates the Law of Large Numbers, as the sample mean approaches the population mean as the sample size increases.
+
+### Central Limit Theorem
+Below are 4 histograms with the difference between the control and treatment group in samples sizes of 50,100,150,and 200. We then repeat the sampling 1000x to see the averages
+
+
+``` {python}
+p_control = 0.018
+p_treatment = 0.022
+
+# parameters
+sample_sizes = [50, 200, 500, 1000]
+n_simulations = 1000
+true_diff = p_treatment - p_control
+
+fig, axs = plt.subplots(2, 2, figsize=(12, 8))
+axs = axs.flatten()
+
+# Simulate and plot 
+for i, n in enumerate(sample_sizes):
+    avg_diffs = []
+
+    for _ in range(n_simulations):
+        control_sample = np.random.binomial(1, p_control, n)
+        treatment_sample = np.random.binomial(1, p_treatment, n)
+        avg_diff = np.mean(treatment_sample) - np.mean(control_sample)
+        avg_diffs.append(avg_diff)
+
+    axs[i].hist(avg_diffs, bins=30, alpha=0.7, color="skyblue", edgecolor="black")
+    axs[i].axvline(x=true_diff, color='red', linestyle='--', label='True Difference (0.004)')
+    axs[i].axvline(x=0, color='black', linestyle=':', label='Zero')
+    axs[i].set_title(f"Sample Size = {n}")
+    axs[i].set_xlabel("Avg Treatment - Control")
+    axs[i].set_ylabel("Frequency")
+    axs[i].legend()
+
+# layout
+plt.suptitle("CLT: Distribution of Average Differences by Sample Size", fontsize=14)
+plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+plt.show()
+
+````
+
+The four histograms above illustrate how the distribution of average differences in donation rates between treatment and control groups evolves as sample size increases. This simulation confirms the Central Limit Theorem (CLT).
+
+At n = 50, the distribution is wide and relatively flat, and zero lies close to the center. This shows that with small sample sizes, we often can't distinguish signal from noise, and random variation makes the estimated treatment effect unreliable.
+
+At n = 200, the distribution becomes more symmetric and bell-shaped. The true treatment effect (0.004) begins to emerge, though zero is still within the central bulk of the distribution, indicating moderate uncertainty.
+
+At n = 500, the distribution tightens further, and the center of the histogram clearly shifts to the right of zero. Zero now lies toward the edge (tail) of the distribution, which suggests that the true effect is increasingly distinguishable from no effect.
+
+At n = 1000, the distribution is even narrower and sharply centered near 0.004. Zero is clearly in the tail, meaning that under this sample size, the true effect is more evident.
+
+Conclusion:
+As sample size increases, the sampling distribution of the average difference becomes more normal and less variable, with its mean converging to the true treatment effect. Zero moves from the center to the tails of the distribution, reinforcing that larger samples improve the precision of effect estimates and the reliability of hypothesis testing.
