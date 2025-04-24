@@ -36,6 +36,8 @@ print(karlan_data['gave'].value_counts(normalize=True))  #donation rate
 print(karlan_data['amount'].mean()) 
 print(karlan_data.dtypes)  
 
+#capping preview for notebook
+pd.set_option('display.max_columns', 10)
 
 
 ```
