@@ -510,7 +510,7 @@ plt.suptitle("CLT: Distribution of Average Differences by Sample Size", fontsize
 plt.tight_layout(rect=[0, 0.03, 1, 0.95])
 plt.show()
 
-````
+```
 
 The four histograms above illustrate how the distribution of average differences in donation rates between treatment and control groups evolves as sample size increases. This simulation confirms the Central Limit Theorem (CLT).
 
