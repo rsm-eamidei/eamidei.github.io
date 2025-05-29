@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Eleanor Amidei">
-<meta name="dcterms.date" content="2025-05-28">
+<meta name="dcterms.date" content="2025-04-27">
 
 <title>A Replication of Karlan and List (2007) – Eleanor’s Website</title>
 <style>
@@ -190,7 +190,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 28, 2025</p>
+      <p class="date">April 27, 2025</p>
     </div>
   </div>
   
@@ -213,7 +213,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The key finding was that matching grants significantly increased both the likelihood of donating and the average donation amount, while challenge grants did not perform significantly better than the standard appeal. The results provided empirical support for the effectiveness of matching mechanisms in charitable fundraising and have since influenced both economic theory and practical strategies used by nonprofit organizations.</p>
 <section id="data-exploration" class="level2">
 <h2 class="anchored" data-anchor-id="data-exploration">Data Exploration</h2>
-<div id="95edaf33" class="cell" data-execution_count="1">
+<div id="e4d6f916" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -432,7 +432,7 @@ dtype: object</code></pre>
 <p>I will be testing the following variables to ensure that the treatment and control groups are statistically similar: - <code>mrm2</code>: The number of months since the last donation. - <code>bluecty</code> : If the potential donor lives in a blue county. - <code>freq</code>: The number of prior donations. - <code>female</code>: The gender to the donor.</p>
 <section id="mrm2" class="level4">
 <h4 class="anchored" data-anchor-id="mrm2"><code>mrm2</code></h4>
-<div id="1ceaf0ff" class="cell" data-execution_count="2">
+<div id="6f35e29d" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> stats</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># mrm2</span></span>
@@ -471,7 +471,7 @@ Manual p-value: 0.9048549631450831</code></pre>
 </div>
 <p>With a t-statistic of .12, which is not more extreme than 1.96, we fail to reject the null hypothesis that the treatment and control groups are statistically significantly different from one another at the 95% confidence level.</p>
 <p>Additionally, when we run this t-statistic through a pre-built program, we find the p_value is actually .905, which much higher than the .05 threshold we would need to reject the null hypothesis.</p>
-<div id="6154b4ed" class="cell" data-execution_count="3">
+<div id="390fff00" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyrsm <span class="im">as</span> rsm </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>reg <span class="op">=</span> rsm.model.regress({<span class="st">"karlan"</span>: karlan_data}, rvar<span class="op">=</span><span class="st">"mrm2"</span>, evar<span class="op">=</span>[<span class="st">"control"</span>])</span>
@@ -509,7 +509,7 @@ Root Mean Square Error (RMSE):
 </section>
 <section id="bluectyc" class="level4">
 <h4 class="anchored" data-anchor-id="bluectyc"><code>bluectyc</code></h4>
-<div id="9ab29257" class="cell" data-execution_count="4">
+<div id="1aebbbe5" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#bluecty - donor county is blue</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#groups</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>treatment_group <span class="op">=</span> karlan_data[karlan_data[<span class="st">'treatment'</span>] <span class="op">==</span> <span class="dv">1</span>][<span class="st">'bluecty'</span>].dropna()</span>
@@ -531,7 +531,7 @@ Root Mean Square Error (RMSE):
 </div>
 </div>
 <p>The t-statistic is -0.85, which is not more extreme than -1.96, we fail to reject the null hypothesis that the treatment and control groups are statistically significantly different from one another at the 95% confidence level for the blue county variable.</p>
-<div id="1945b21b" class="cell" data-execution_count="5">
+<div id="8710edc5" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyrsm <span class="im">as</span> rsm </span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>reg <span class="op">=</span> rsm.model.regress({<span class="st">"karlan"</span>: karlan_data}, rvar<span class="op">=</span><span class="st">"bluecty"</span>, evar<span class="op">=</span>[<span class="st">"control"</span>])</span>
@@ -569,7 +569,7 @@ Root Mean Square Error (RMSE):
 </section>
 <section id="freq" class="level4">
 <h4 class="anchored" data-anchor-id="freq"><code>freq</code></h4>
-<div id="7e6f33c6" class="cell" data-execution_count="6">
+<div id="c0b90dc3" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#freq - the number of prior donations</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#groups</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>treatment_group <span class="op">=</span> karlan_data[karlan_data[<span class="st">'treatment'</span>] <span class="op">==</span> <span class="dv">1</span>][<span class="st">'freq'</span>].dropna()</span>
@@ -626,7 +626,7 @@ Root Mean Square Error (RMSE):
 </section>
 <section id="female" class="level4">
 <h4 class="anchored" data-anchor-id="female"><code>female</code></h4>
-<div id="730e7db0" class="cell" data-execution_count="7">
+<div id="e83b34c9" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#groups</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>treatment_group <span class="op">=</span> karlan_data[karlan_data[<span class="st">'treatment'</span>] <span class="op">==</span> <span class="dv">1</span>][<span class="st">'female'</span>].dropna()</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>control_group <span class="op">=</span> karlan_data[karlan_data[<span class="st">'control'</span>] <span class="op">==</span> <span class="dv">1</span>][<span class="st">'female'</span>].dropna()</span>
@@ -686,7 +686,7 @@ Root Mean Square Error (RMSE):
 <section id="charitable-contribution-made" class="level2">
 <h2 class="anchored" data-anchor-id="charitable-contribution-made">Charitable Contribution Made</h2>
 <p>First, I analyze whether matched donations lead to an increased response rate of making a donation.</p>
-<div id="f9b3ae3f" class="cell" data-execution_count="8">
+<div id="f80ae0d6" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>donated_treatment <span class="op">=</span> karlan_data[karlan_data[<span class="st">'treatment'</span>] <span class="op">==</span> <span class="dv">1</span>][<span class="st">"gave"</span>].mean()</span>
@@ -713,7 +713,7 @@ Root Mean Square Error (RMSE):
 </div>
 </div>
 </div>
-<div id="72f3a722" class="cell" data-execution_count="9">
+<div id="81215ce7" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#groups</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>treatment_group <span class="op">=</span> karlan_data[karlan_data[<span class="st">'treatment'</span>] <span class="op">==</span> <span class="dv">1</span>][<span class="st">'gave'</span>]</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>control_group <span class="op">=</span> karlan_data[karlan_data[<span class="st">'control'</span>] <span class="op">==</span> <span class="dv">1</span>][<span class="st">'gave'</span>]</span>
@@ -790,7 +790,7 @@ Dep. Variable:                   gave   No. Observations:                50083
 Model:                         Probit   Df Residuals:                    50081
 Method:                           MLE   Df Model:                            1
 Date:                Wed, 28 May 2025   Pseudo R-squ.:               0.0009783
-Time:                        19:32:44   Log-Likelihood:                -5030.5
+Time:                        19:44:11   Log-Likelihood:                -5030.5
 converged:                       True   LL-Null:                       -5035.4
 Covariance Type:            nonrobust   LLR p-value:                  0.001696
 ==============================================================================
@@ -817,7 +817,7 @@ treatment      0.0043      0.001      3.104      0.002       0.002       0.007
 <h2 class="anchored" data-anchor-id="differences-between-match-rates">Differences between Match Rates</h2>
 <p>Next, I assess the effectiveness of different sizes of matched donations on the response rate.</p>
 <p>1:1 vs 2:1 match ratio on response rate</p>
-<div id="30f49f6b" class="cell" data-execution_count="10">
+<div id="b42800cf" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># t-test comparing 1:1 match rate and 2:1 match rate</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">#groups</span></span>
@@ -846,7 +846,7 @@ Manual p-value: 0.33452727037590346</code></pre>
 </div>
 </div>
 <p>2:1 vs 3:1 match ratio on response rate</p>
-<div id="0b8aac25" class="cell" data-execution_count="11">
+<div id="9e762c4a" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># t-test comparing 2:1 match rate and 3:1 match rate</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co">#groups</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>match_2_1 <span class="op">=</span> karlan_data[karlan_data[<span class="st">'ratio2'</span>] <span class="op">==</span> <span class="dv">1</span>][<span class="st">'gave'</span>]</span>
@@ -876,7 +876,7 @@ Manual p-value: 0.9600303977894389</code></pre>
 <p>The negative t-statistic indicates that the 2:1 match ratio has a higher mean that the 1:1 ratio, however this difference is not significant at the 95% confidence level. The p-value is .34, which is well above the .05 threshold we would need to reject the null hypothesis.</p>
 <p>The same applies to the 3:1 match ratio, with a p-value of .96 and a smaller difference between the two groups.</p>
 <p><em>todo: Assess the same issue using a regression. Specifically, create the variable <code>ratio1</code> then regress <code>gave</code> on <code>ratio1</code>, <code>ratio2</code>, and <code>ratio3</code> (or alternatively, regress <code>gave</code> on the categorical variable <code>ratio</code>). Interpret the coefficients and their statistical precision.</em></p>
-<div id="bb91e79c" class="cell" data-execution_count="12">
+<div id="d54e85fe" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>karlan_data[<span class="st">"ratio1"</span>] <span class="op">=</span> (karlan_data[<span class="st">"ratio"</span>] <span class="op">==</span> <span class="dv">1</span>).astype(<span class="bu">int</span>)</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> karlan_data[[<span class="st">'ratio1'</span>,<span class="st">'ratio2'</span>,<span class="st">'ratio3'</span>]]</span>
@@ -903,7 +903,7 @@ Dep. Variable:                   gave   No. Observations:                50083
 Model:                         Probit   Df Residuals:                    50079
 Method:                           MLE   Df Model:                            3
 Date:                Wed, 28 May 2025   Pseudo R-squ.:                0.001108
-Time:                        19:32:44   Log-Likelihood:                -5029.8
+Time:                        19:44:11   Log-Likelihood:                -5029.8
 converged:                       True   LL-Null:                       -5035.4
 Covariance Type:            nonrobust   LLR p-value:                   0.01091
 ==============================================================================
@@ -933,7 +933,7 @@ ratio3         0.0050      0.002      2.841      0.004       0.002       0.008
 <ul>
 <li>calculated directly from the data</li>
 </ul>
-<div id="b3d709e3" class="cell" data-execution_count="13">
+<div id="c1d18b9f" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#means</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>mean_1_1 <span class="op">=</span> karlan_data[karlan_data[<span class="st">"ratio"</span>] <span class="op">==</span> <span class="dv">1</span>][<span class="st">"gave"</span>].mean()</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>mean_2_1 <span class="op">=</span> karlan_data[karlan_data[<span class="st">"ratio"</span>] <span class="op">==</span> <span class="dv">2</span>][<span class="st">"gave"</span>].mean()</span>
@@ -953,7 +953,7 @@ ratio3         0.0050      0.002      2.841      0.004       0.002       0.008
 <ul>
 <li>calculated from the differences in coefficients</li>
 </ul>
-<p>::: {#1fcf4e47 .cell execution_count=14} ``` {.python .cell-code} coef_1_1= result.params[‘ratio1’] coef_2_1= result.params[‘ratio2’] coef_3_1= result.params[‘ratio3’]</p>
+<p>::: {#b6b6346d .cell execution_count=14} ``` {.python .cell-code} coef_1_1= result.params[‘ratio1’] coef_2_1= result.params[‘ratio2’] coef_3_1= result.params[‘ratio3’]</p>
 <p>#Difference in effects diff_2_1_vs_1_1= coef_2_1 - coef_1_1 diff_3_1_vs_2_1= coef_3_1 - coef_2_1 print(“Regression-basedeffect of 3:1 vs 2:1 match:”, diff_3_1_vs_2_1) print(“Regression-basedeffect of 2:1 vs 1:1 match:”, diff_2_1_vs_1_1)</p>
 <p>mfx= result.get_margeff() print(mfx.summary()) ```</p>
 <p>::: {.cell-output .cell-output-stdout} <code>Regression-basedeffect of 3:1 vs 2:1 match: 0.0018572014854180002  Regression-basedeffect of 2:1 vs 1:1 match: 0.03634986488779221         Probit Marginal Effects         =====================================  Dep. Variable:                   gave  Method:                          dydx  At:                           overall  ==============================================================================                  dy/dx    std err          z      P&gt;|z|      [0.025      0.975]  ------------------------------------------------------------------------------  ratio1         0.0031      0.002      1.724      0.085      -0.000       0.007  ratio2         0.0049      0.002      2.786      0.005       0.001       0.008  ratio3         0.0050      0.002      2.841      0.004       0.002       0.008  ==============================================================================</code> ::: :::</p>
@@ -964,7 +964,7 @@ ratio3         0.0050      0.002      2.841      0.004       0.002       0.008
 <section id="size-of-charitable-contribution" class="level2">
 <h2 class="anchored" data-anchor-id="size-of-charitable-contribution">Size of Charitable Contribution</h2>
 <p>In this subsection, I analyze the effect of the size of matched donation on the size of the charitable contribution (amount of donation).</p>
-<div id="c0dc9cd3" class="cell" data-execution_count="15">
+<div id="63c62c49" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>reg <span class="op">=</span> rsm.model.regress({<span class="st">"karlan"</span>: karlan_data}, rvar<span class="op">=</span><span class="st">"amount"</span>, evar<span class="op">=</span>[<span class="st">"treatment"</span>])</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>reg.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -987,7 +987,7 @@ Nr obs: 50,083</code></pre>
 </div>
 </div>
 <p>In the regression above, we learn that treatment effect has a slightly significant (not at the 95% confidence level and small) effect on size of donation.</p>
-<div id="bc2f99f6" class="cell" data-execution_count="16">
+<div id="0a7d5780" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>karlan_donations <span class="op">=</span> karlan_data[karlan_data[<span class="st">'gave'</span>] <span class="op">==</span><span class="dv">1</span> ]</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>reg <span class="op">=</span> rsm.model.regress({<span class="st">"karlan"</span>: karlan_donations}, rvar<span class="op">=</span><span class="st">"amount"</span>, evar<span class="op">=</span>[<span class="st">"treatment"</span>])</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>reg.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1011,7 +1011,7 @@ Nr obs: 1,034</code></pre>
 </div>
 </div>
 <p>When only including donors, the coefficient of the regression shows us the treatment group donates about $1.67 less than the control group, however this result is not significant at the 95% confidence level. This does not have a causal interpretation because treatment may affect the likelihood of donating, and here we’re looking at the size of the donation conditional on donating.</p>
-<div id="13c28594" class="cell" data-execution_count="17">
+<div id="cd907fbd" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>donors <span class="op">=</span> karlan_data[karlan_data[<span class="st">'gave'</span>] <span class="op">==</span><span class="dv">1</span>]</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Control</span></span>
@@ -1056,7 +1056,7 @@ Nr obs: 1,034</code></pre>
 <section id="law-of-large-numbers" class="level3">
 <h3 class="anchored" data-anchor-id="law-of-large-numbers">Law of Large Numbers</h3>
 <p>Here, I simulate 10,000 draws from the control and treatment groups, then calculate their differences.</p>
-<div id="871e2b2c" class="cell" data-execution_count="18">
+<div id="744d1144" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Simulated Numbers</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">1</span>)  <span class="co"># For reproducibilit</span></span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>sim_control <span class="op">=</span> np.random.choice(control_donors, size<span class="op">=</span><span class="dv">10000</span>, replace<span class="op">=</span><span class="va">True</span>)</span>
@@ -1088,7 +1088,7 @@ Nr obs: 1,034</code></pre>
 <section id="central-limit-theorem" class="level3">
 <h3 class="anchored" data-anchor-id="central-limit-theorem">Central Limit Theorem</h3>
 <p>Below are 4 histograms with the difference between the control and treatment group in samples sizes of 50,100,150,and 200. We then repeat the sampling 1000x to see the averages</p>
-<div id="3919153e" class="cell" data-execution_count="19">
+<div id="087cc510" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>p_control <span class="op">=</span> <span class="fl">0.018</span></span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>p_treatment <span class="op">=</span> <span class="fl">0.022</span></span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
