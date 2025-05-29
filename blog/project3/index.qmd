@@ -429,7 +429,7 @@ _todo: Suppose you did not simulate the data. What do you observe about the para
 _todo: At a high level, discuss what change you would need to make in order to simulate data from --- and estimate the parameters of --- a multi-level (aka random-parameter or hierarchical) model. This is the model we use to analyze "real world" conjoint data._
 
 ```{python}
-print("\n=== COMPARISON OF MLE AND BAYESIAN RESULTS ===")
+print("\n ===COMPARISON OF MLE AND BAYESIAN RESULTS===")
 comparison_df = pd.DataFrame({
     'Parameter': param_names,
     'True_Value': [1.0, 0.5, -0.8, -0.1],
@@ -440,23 +440,24 @@ comparison_df = pd.DataFrame({
 })
 print(comparison_df.to_string(index=False))
 
-print("\n=== DISCUSSION POINTS ===")
-print("1. Parameter Interpretation:")
+print("\n===DISCUSSION POINTS===")
+print("1.\n ===Parameter Interpretation:===")
 print(f"   - Netflix coefficient ({beta_mle[0]:.3f}) > Prime coefficient ({beta_mle[1]:.3f})")
 print("     This suggests consumers prefer Netflix over Amazon Prime, with Hulu as the reference.")
 print("   - Negative price coefficient suggests consumers prefer lower prices (as expected).")
 print("   - Negative ads coefficient suggests consumers prefer ad-free content.")
 
-print(f"\n2. Model Performance:")
+print(f"\n ===2. Model Performance:===")
 print(f"   - Both MLE and Bayesian approaches recover parameters close to true values")
 print(f"   - MCMC acceptance rate: {acceptance_rate:.3f} (reasonable for this problem)")
 print(f"   - Standard errors from both methods are quite similar")
 
-print(f"\n3. For hierarchical/multi-level models:")
+print(f"\n===3. For hierarchical/multi-level models:===")
 print("   - Would need to add individual-level random effects: β_i = β + u_i")
 print("   - This requires modeling the distribution of u_i (typically multivariate normal)")
 print("   - Estimation becomes more complex, often requiring specialized software")
 print("   - Allows for heterogeneity in preferences across consumers")
+
 ```
 
 
