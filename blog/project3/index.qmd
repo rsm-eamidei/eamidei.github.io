@@ -58,76 +58,74 @@ $$
 
 where the variables are binary indicators and $\varepsilon$ is Type 1 Extreme Value (ie, Gumble) distributed.
 
-The following code provides the simulation of the conjoint data.
+The following code provides the simulation of the conjoint data. 
+*Student note* this was professor provided, but I changed it to Python because I don't have R installed. And I won't.
 
-:::: {.callout-note collapse="true"}
-```{r}
-# set seed for reproducibility
-set.seed(123)
 
-# define attributes
-brand <- c("N", "P", "H") # Netflix, Prime, Hulu
-ad <- c("Yes", "No")
-price <- seq(8, 32, by=4)
+```{python}
+import numpy as np
+import pandas as pd
 
-# generate all possible profiles
-profiles <- expand.grid(
-    brand = brand,
-    ad = ad,
-    price = price
+# Set seed for reproducibility
+np.random.seed(123)
+
+# Define attributes
+brand = ["N", "P", "H"]  # Netflix, Prime, Hulu
+ad = ["Yes", "No"]
+price = np.arange(8, 33, 4)
+
+# Generate all possible profiles
+profiles = pd.DataFrame(
+    [(b, a, p) for b in brand for a in ad for p in price],
+    columns=["brand", "ad", "price"]
 )
-m <- nrow(profiles)
+m = len(profiles)
 
-# assign part-worth utilities (true parameters)
-b_util <- c(N = 1.0, P = 0.5, H = 0)
-a_util <- c(Yes = -0.8, No = 0.0)
-p_util <- function(p) -0.1 * p
+# Assign part-worth utilities (true parameters)
+b_util = {"N": 1.0, "P": 0.5, "H": 0.0}
+a_util = {"Yes": -0.8, "No": 0.0}
+def p_util(p):
+    return -0.1 * p
 
-# number of respondents, choice tasks, and alternatives per task
-n_peeps <- 100
-n_tasks <- 10
-n_alts <- 3
+# Number of respondents, choice tasks, and alternatives per task
+n_peeps = 100
+n_tasks = 10
+n_alts = 3
 
-# function to simulate one respondent’s data
-sim_one <- function(id) {
-  
-    datlist <- list()
-    
-    # loop over choice tasks
-    for (t in 1:n_tasks) {
-        
-        # randomly sample 3 alts (better practice would be to use a design)
-        dat <- cbind(resp=id, task=t, profiles[sample(m, size=n_alts), ])
-        
-        # compute deterministic portion of utility
-        dat$v <- b_util[dat$brand] + a_util[dat$ad] + p_util(dat$price) |> round(10)
-        
-        # add Gumbel noise (Type I extreme value)
-        dat$e <- -log(-log(runif(n_alts)))
-        dat$u <- dat$v + dat$e
-        
-        # identify chosen alternative
-        dat$choice <- as.integer(dat$u == max(dat$u))
-        
-        # store task
-        datlist[[t]] <- dat
-    }
-    
-    # combine all tasks for one respondent
-    do.call(rbind, datlist)
-}
+# Function to simulate one respondent's data
+def sim_one(resp_id):
+    datlist = []
+    for t in range(1, n_tasks + 1):
+        sampled_profiles = profiles.sample(n=n_alts).copy()
+        sampled_profiles.insert(0, "task", t)
+        sampled_profiles.insert(0, "resp", resp_id)
 
-# simulate data for all respondents
-conjoint_data <- do.call(rbind, lapply(1:n_peeps, sim_one))
+        # Compute deterministic portion of utility
+        v = sampled_profiles["brand"].map(b_util) + \
+            sampled_profiles["ad"].map(a_util) + \
+            p_util(sampled_profiles["price"])
 
-# remove values unobservable to the researcher
-conjoint_data <- conjoint_data[ , c("resp", "task", "brand", "ad", "price", "choice")]
+        # Add Gumbel noise (Type I extreme value)
+        e = -np.log(-np.log(np.random.uniform(size=n_alts)))
+        u = v + e
 
-# clean up
-rm(list=setdiff(ls(), "conjoint_data"))
+        # Identify chosen alternative
+        choice = (u == u.max()).astype(int)
+
+        sampled_profiles["choice"] = choice
+        datlist.append(sampled_profiles)
+
+    return pd.concat(datlist, ignore_index=True)
+
+# Simulate data for all respondents
+conjoint_data = pd.concat([sim_one(i) for i in range(1, n_peeps + 1)], ignore_index=True)
+
+# Keep only observable columns
+conjoint_data = conjoint_data[["resp", "task", "brand", "ad", "price", "choice"]]
 ```
-::::
 
+
+s
 
 
 ## 3. Preparing the Data for Estimation
@@ -197,6 +195,8 @@ def neg_log_likelihood(beta, X, y, task_ids):
 beta_start = np.array([0.0, 0.0, 0.0, 0.0])
 
 # Maximum likelihood estimation
+from scipy.optimize import minimize
+
 mle_result = minimize(
     neg_log_likelihood,
     beta_start,
